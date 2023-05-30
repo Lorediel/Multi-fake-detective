@@ -1,0 +1,8 @@
+transformers>=4.26.1
+torchvision>=0.14.1
+tqdm>=4.64.1
+sentencepiece>=0.1.97
+git+https://github.com/facebookresearch/detectron2.git
+pyyaml>=5.1
+sentencepiece>=0.1.99
+sacremoses>=0.0.53
