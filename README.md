@@ -1,6 +1,6 @@
 # Multimodal deep learning model for fake news recognition
 
-This is the code for the multimodal model that I developed for my master's thesis, tackling the problem of fake news detection. It obtained the first place in the [MULTI-Fake-DetectiVE](https://sites.google.com/unipi.it/multi-fake-detective/home) competition proposed in the workshop [EVALITA](https://www.evalita.it/) 2023. <br>
+This is the code for the multimodal model that tackles the problem of fake news detection. It obtained the first place in the [MULTI-Fake-DetectiVE](https://sites.google.com/unipi.it/multi-fake-detective/home) competition proposed in the workshop [EVALITA](https://www.evalita.it/) 2023. <br>
 
 The research paper regarding this work will be available soon!
 
@@ -58,7 +58,7 @@ The extensions applied are:
   </li>
 </ul>
 
-# Results
+## Results
 
 The metrics used are Accuracy, Precision, Recall, F1-score, F1-weighted. The main metric used is the F1-weighted since the dataset was not balanced. The extensions were used by themselves and combined. The best performance between all the tested combinations was obtained with the combination A1, C, D. <br>
 The overall best performance was however obtained by a weighed ensemble between the combinations:
@@ -91,4 +91,43 @@ The weighted ensemble model won the first place in the competition. The table is
 |   8  |   HIJLI-JU-CLEF-Multi   |          0.393         |
 |   9  |    Baseline-SVM_IMAGE   |          0.386         |
 |  10  |    Baseline-MLP_MULTI   |          0.374         |
+
+## How to run
+
+Unfortunately, due to copyright, I cannot share the dataset.
+If you have your own dataset you can train the models inside the directory `models`. For example the model `a1_c_d.py`.
+To train it:
+```python a1_c_d.py loss learning_rate save_path weight_decay tsvpath mediapath pretrained_bert_path```
+where:
+<ul>
+  <li>loss: can be either "cross_entropy" or "focal"</li>
+  <li>learning_rate: value of the learning rate to use</li>
+  <li>save_path: file to save the best perfroamnce model</li>
+  <li>weight_decay: value of the weight decay</li>
+  <li>tsvpath: path to the tsv file of the dataset</li>
+  <li>mediapath: path of the image folder of the dataset</li>
+  <li>pretrained_bert_path: path to the pretrained bert model, required to handle long texts</li>
+</ul>
+
+To test the model, go in the `evaluation` directory and run the evaluation:
+```python eval_model.py tsvpath mediapath model_path model_type```
+where:
+<ul>
+  <li>tsvpath: path to the tsv file of the dataset</li>
+  <li>mediapath: path of the image folder of the dataset</li>
+  <li>model_path: path to the model to evaluate</li>
+  <li>model_type: type of the model, can be either "a2_b", "a1_e_d", "a1_c_d"</li>
+</ul>
+
+To test the ensemble model:
+```python eval_ensemble.py tsvpath mediapath path1 path2 path3```
+where:
+<ul>
+  <li>tsvpath: path to the tsv file of the dataset</li>
+  <li>mediapath: path of the image folder of the dataset</li>
+  <li>path1: path to the model "a2_b"</li>
+  <li>path2: path to the model "a1_e_d"</li>
+  <li>path3: path to the model "a1_c_d"</li>
+</ul>
+
 
