@@ -8,9 +8,9 @@ from utils.FakeNewsDataset import collate_fn, FakeNewsDataset
 from utils.utils import stratifiedSplit, compute_metrics
 from statistics import mean
 import sys
-from models_for_ensemble.SE_at_start import FNDModel as FNDModel1
-from models_for_ensemble.DFT import FNDModel as FNDModel2 
-from models_for_ensemble.FND_BT_Concat import FNDModel as FNDModel3
+from models_for_ensemble.A2_B import FNDModel as FNDModel1
+from models_for_ensemble.A1_E_D import FNDModel as FNDModel2 
+from models_for_ensemble.A1_C_D import FNDModel as FNDModel3
 from itertools import combinations
 import pandas as pd
 import sys
@@ -128,9 +128,9 @@ if __name__ == "__main__":
     model1 = FNDModel1(None, None, None)
     model2 = FNDModel2(None, None, None)
     model3 = FNDModel3(None, None, None)
-    w1 = 1.0
-    w2 = 1.0
-    w3 = 1.0
+    w1 = 0.8
+    w2 = 0.7
+    w3 = 0.9
 
     load_model(model1, path1)
     load_model(model2, path2)
@@ -152,3 +152,11 @@ if __name__ == "__main__":
 
     print("Metrics: ", metrics)
     print("Confusion Matrix: ", cm)
+    
+
+    
+
+
+
+
+

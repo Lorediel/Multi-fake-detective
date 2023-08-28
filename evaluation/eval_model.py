@@ -8,9 +8,9 @@ from utils.FakeNewsDataset import collate_fn, FakeNewsDataset
 from utils.utils import stratifiedSplit, compute_metrics
 from statistics import mean
 import sys
-from models_for_ensemble.SE_at_start import FNDModel as FNDModel1
-from models_for_ensemble.DFT import FNDModel as FNDModel2 
-from models_for_ensemble.FND_BT_Concat import FNDModel as FNDModel3
+from models_for_ensemble.A2_B import FNDModel as FNDModel1
+from models_for_ensemble.A1_E_D import FNDModel as FNDModel2 
+from models_for_ensemble.A1_C_D import FNDModel as FNDModel3
 from itertools import combinations
 import pandas as pd
 import sys
@@ -91,64 +91,44 @@ def make_eval_final(logits, nums_images, labels, strategy="probs"):
     cm = get_confusion_matrix(preds, labels)
     return metrics, cm
 
-def get_weighted_average(logits, weights):
-    weight_sum = sum(weights)
-    running_sum = None
-    for i in range(len(weights)):
-        mult_logits = logits[i] * weights[i]
-        if running_sum is None:
-            running_sum = mult_logits
-        else:
-            running_sum += mult_logits
-    return running_sum / weight_sum
-        
-
-
 if __name__ == "__main__":
     args = sys.argv
     tsvfile = args[1]
     mediafile = args[2]
-    # 0.596
-    # path of model 1
-    path1 = args[3]
+    
+    # path of the model
+    model_path = args[3]
 
-    # 0.581
-    # path of model 2
-    path2 = args[4]
-
-    #0.606
-    # path of model 3
-    path3 = args[5]
+    model_type = args[4]
 
     dataset = FakeNewsDataset(tsvfile, mediafile)
     train_ds, val_ds = stratifiedSplit(dataset)
     
     dataset = FakeNewsDataset('./MULTI-Fake-Detective_Task1_Data.tsv','../Media')
     train_ds, val_ds = stratifiedSplit(dataset)
-    model1 = FNDModel1(None, None, None)
-    model2 = FNDModel2(None, None, None)
-    model3 = FNDModel3(None, None, None)
-    w1 = 1.0
-    w2 = 1.0
-    w3 = 1.0
 
-    load_model(model1, path1)
-    load_model(model2, path2)
-    load_model(model3, path3)
+    if model_type == "a2_b":
+        model = FNDModel1(None, None, None)
+    elif model_type == "a1_e_d":
+        model = FNDModel2(None, None, None)
+    elif model_type == "a1_c_d":
+        model = FNDModel3(None, None, None)
+    else:
+        raise Exception("Invalid model type")
 
-    logits1, _, _ = extract_logits(model1, val_ds)
-    del model1
-    logits2, _, _ = extract_logits(model2, val_ds)
-    del model2
-    logits3, labels, nums_images = extract_logits(model3, val_ds)
+    load_model(model, model_path)
 
-    # avg logits
-    weight_list = [w1, w2, w3]
-    logits_list = [logits1, logits2, logits3]
-    # get the weighted average
-    weighted_logit = get_weighted_average(logits_list, weight_list)
-    # get the metrics
-    metrics, cm = make_eval_final(weighted_logit, nums_images, labels, strategy="probs")
+    logits, labels, nums_images = extract_logits(model, val_ds)
+
+    metrics, cm = make_eval_final(logits, nums_images, labels, strategy="logits")
 
     print("Metrics: ", metrics)
     print("Confusion Matrix: ", cm)
+    
+
+    
+
+
+
+
+
